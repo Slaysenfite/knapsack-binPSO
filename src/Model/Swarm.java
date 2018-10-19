@@ -2,29 +2,29 @@ package Model;
 
 import java.util.ArrayList;
 
-public class Population {
+public class Swarm {
 	
 	private ArrayList<Item> items;
-	private ArrayList<Individual> population;
-	
-	public Population(ArrayList<Item> items, int populationSize) {
+	private ArrayList<Particle> population;
+
+	public Swarm(ArrayList<Item> items, int populationSize) {
 		this.items = items;
 		population = new ArrayList<>();
 		for(int i = 0; i < populationSize; i++) {
-			population.add(new Individual(items.size()));
+			population.add(new Particle(items.size()));
 		}
 	}
 
-    public Population(ArrayList<Item> items, ArrayList<Individual> population) {
+    public Swarm(ArrayList<Item> items, ArrayList<Particle> population) {
         this.items = items;
         this.population = population;
     }
 
-	public void setPopulation(ArrayList<Individual> population) {
+	public void setPopulation(ArrayList<Particle> population) {
 		this.population = population;
 	}
 
-    public ArrayList<Individual> getPopulation() {
+    public ArrayList<Particle> getPopulation() {
 		return population;
 	}
 
@@ -42,4 +42,14 @@ public class Population {
         return value ;
     }
 
+    public int getIndexOf(Particle particle) {
+	    int index = -1;
+	    for(int i = 0; i < this.population.size(); i++){
+	        if(this.population.get(i).equals(particle)){
+	            index = i;
+	            break;
+            }
+        }
+        return index;
+    }
 }

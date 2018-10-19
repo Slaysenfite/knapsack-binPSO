@@ -21,7 +21,7 @@ public class Item {
 		return value;
 	}
 	
-	public double valueVersusWeightRatio() {
+	public double getGreedyRatio() {
 		return (value*1.00)/weight;
 	}
 
