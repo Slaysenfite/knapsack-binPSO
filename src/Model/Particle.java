@@ -6,21 +6,34 @@ public class Particle implements Comparable<Particle>, Cloneable{
 	
 	private byte[] position;
 	private int fitness;
-	private int personalBest;
-	private int velocity;
+	private byte[] personalBest;
+    private byte[] nbBest;
+	private int totalVelocity;
+	private double[] velocity;
 
 	public Particle(int size) {
         this.fitness = 0;
+        this.personalBest = new byte[size];
+        this.nbBest = new byte[size];
+        this.totalVelocity = 0;
+        velocity = new double[size];
         position = new byte[size];
         int chance;
         for(int i = 0; i < size; i++) {
+
             chance = UtilityMethods.generateRandomBoundedInt(0, 100);
-            if(chance <= 50) position[i] = 1;
-            else position[i] = 0;
+            if(chance <= 50) {
+                position[i] = 1;
+                velocity[i] = 1;
+            }
+            else {
+                position[i] = 0;
+                velocity[i] = 0;
+            }
         }
     }
 
-	public Particle(byte[] position) {
+    public Particle(byte[] position) {
 		this.position = position;
 	}
 	
@@ -36,23 +49,42 @@ public class Particle implements Comparable<Particle>, Cloneable{
 		this.fitness = fitness;
 	}
 
-    public int getVelocity() {
-        return velocity;
+    public int getTotalVelocity() {
+        return totalVelocity;
     }
 
-    public void setVelocity(int velocity) {
-        this.velocity = velocity;
+    public void setTotalVelocity(int totalVelocity) {
+        this.totalVelocity = totalVelocity;
     }
 
-    public int getPersonalBest() {
+
+    public byte[] getPersonalBest() {
         return personalBest;
     }
 
-    public void setPersonalBest(int personalBest) {
+    public void setPersonalBest(byte[] personalBest) {
         this.personalBest = personalBest;
     }
 
+    public byte[] getNbBest() {
+        return nbBest;
+    }
 
+    public void setNbBest(byte[] nbBest) {
+        this.nbBest = nbBest;
+    }
+
+    public double[] getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(double[] velocity) {
+        this.velocity = velocity;
+    }
+
+    public void setVelocityAt(int index, double velElement) {
+	    this.velocity[index] = velElement;
+    }
 
     public byte[] getPositionArray() {
 		return position;
@@ -65,7 +97,7 @@ public class Particle implements Comparable<Particle>, Cloneable{
 		return ret + "\n";
 	}
 
-	public void setPosition(byte[] position) {
+	public void setPositionArray(byte[] position) {
 		this.position = position;
 	}
 

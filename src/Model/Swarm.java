@@ -6,7 +6,7 @@ public class Swarm {
 	
 	private ArrayList<Item> items;
 	private ArrayList<Particle> population;
-	
+
 	public Swarm(ArrayList<Item> items, int populationSize) {
 		this.items = items;
 		population = new ArrayList<>();
@@ -42,4 +42,14 @@ public class Swarm {
         return value ;
     }
 
+    public int getIndexOf(Particle particle) {
+	    int index = -1;
+	    for(int i = 0; i < this.population.size(); i++){
+	        if(this.population.get(i).equals(particle)){
+	            index = i;
+	            break;
+            }
+        }
+        return index;
+    }
 }
