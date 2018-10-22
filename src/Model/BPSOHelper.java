@@ -5,6 +5,9 @@ import utilities.UtilityMethods;
 
 import java.util.ArrayList;
 
+import static utilities.Constants.LAMBDA;
+import static utilities.UtilityMethods.generateU;
+
 public class BPSOHelper {
 
     private static int DISTANCE_ERROR = -1;
@@ -20,8 +23,16 @@ public class BPSOHelper {
         } else return DISTANCE_ERROR;
     }
 
-    private static double sigmoidFunction(double x){
-        return 1/(1 + Math.exp(-x));
+    private static double sigmoidFunction(double x, double lambda){
+        return 1/(1 + Math.exp(-x*lambda));
+    }
+
+    private static double tanHNormalization(double x) {
+        return 0.5*Math.tanh(x) + 0.5;
+    }
+
+    private static double sineNormalization(double x) {
+        return 0.5*Math.sin(x);
     }
 
     public static int greedyRepairFitness(byte[] individual, ArrayList<Item> items) {
@@ -32,7 +43,7 @@ public class BPSOHelper {
         return individualValue(individual, items);
     }
 
-    private static int individualValue(byte[] individual, ArrayList<Item> items) {
+    public static int individualValue(byte[] individual, ArrayList<Item> items) {
         int value = 0;
         for(int c = 0; c < items.size(); c++) {
             if(individual[c] == 1) {
@@ -108,14 +119,71 @@ public class BPSOHelper {
                 cognitive = (individual.getPersonalBest()[i]);
                 social = (individual.getNbBest()[i]);
             }
+            if(Constants.FORCE_CONVERGE){
+                cognitive = 0;
+                social = (individual.getNbBest()[i]);
+            }
             velCom = individual.getVelocity()[i] + cognitive + social;
             individual.setVelocityAt(i, velCom);
             rand = (UtilityMethods.generateRandomBoundedInt(1, 100)*1.0)/100 ;
-            if(rand < Math.abs(sigmoidFunction(velCom)))
+            if(rand < Math.abs(sigmoidFunction(velCom, LAMBDA)))
                 individual.getPositionArray()[i] = 1;
             else individual.getPositionArray()[i] = 0;
         }
     }
 
+
+    public static void updateVelocityAndPositionXOR(Particle individual, int iterNum){
+        double rand;
+        double rCoff;
+        double social;
+        double cognitive;
+        double velCom;
+        int size = individual.getPositionArray().length;
+        for(int i = 0; i < size; i++){
+            rCoff = (UtilityMethods.generateRandomBoundedInt(1, 100)*1.0)/100;
+            if(iterNum < 10){
+                cognitive = (individual.getPersonalBest()[i])*generateU();
+                social = (individual.getNbBest()[i])*generateU();
+            }
+            else{
+                cognitive = (individual.getPersonalBest()[i]^individual.getPositionArray()[i])*generateU();
+                social = (individual.getNbBest()[i]^individual.getPositionArray()[i])*generateU();
+            }
+            if(Constants.FORCE_EXPLORE){
+                cognitive = (individual.getPersonalBest()[i]);
+                social = (individual.getNbBest()[i]);
+            }
+            if(Constants.FORCE_CONVERGE){
+                cognitive = 0;
+                social = (individual.getNbBest()[i]);
+            }
+            velCom = individual.getVelocity()[i] + cognitive + social;
+            individual.setVelocityAt(i, velCom);
+            rand = (UtilityMethods.generateRandomBoundedInt(1, 100)*1.0)/100 ;
+            if(rand < Math.abs(tanHNormalization(velCom)))
+                individual.getPositionArray()[i] = 1;
+            else individual.getPositionArray()[i] = 0;
+        }
+    }
+
+    public static void updateVelocityAndPositionStandard(Particle individual, int iterNum){
+        double rand;
+        double social;
+        double cognitive;
+        double velCom;
+        int size = individual.getPositionArray().length;
+        for(int i = 0; i < size; i++){
+
+            cognitive = (individual.getPersonalBest()[i]^individual.getPositionArray()[i])*generateU();
+            social = (individual.getNbBest()[i]^individual.getPositionArray()[i])*generateU();
+            velCom = individual.getVelocity()[i] + cognitive + social;
+            individual.setVelocityAt(i, velCom);
+            rand = (UtilityMethods.generateRandomBoundedInt(1, 100)*1.0)/100 ;
+            if(rand < Math.abs(sigmoidFunction(velCom, LAMBDA)))
+                individual.getPositionArray()[i] = 1;
+            else individual.getPositionArray()[i] = 0;
+        }
+    }
 
 }

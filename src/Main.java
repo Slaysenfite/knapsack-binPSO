@@ -9,6 +9,7 @@ import utilities.UtilityMethods;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static Model.BPSOHelper.individualValue;
 import static utilities.Constants.*;
 
 public class Main {
@@ -42,13 +43,12 @@ public class Main {
                 }
                 BPSOHelper.updateNeighbourhoodBest(i, swarm);
                 if(Constants.SWARM_MODEL.equals("gbest")){
-                    if(BPSOHelper.greedyRepairFitness(i.getPersonalBest(), items) > globalBest){
+                    if(i.getFitness() > globalBest){
                         i.setNbBest(i.getPersonalBest());
                     }
                 }
                 if(Constants.SWARM_MODEL.equals("lbest")){
-                    if(BPSOHelper.greedyRepairFitness(i.getPersonalBest(), items)
-                            > BPSOHelper.greedyRepairFitness(i.getNbBest(), items)){
+                    if(i.getFitness() > BPSOHelper.greedyRepairFitness(i.getNbBest(), items)){
                         i.setNbBest(i.getPersonalBest());
                     }
                 }
@@ -70,6 +70,11 @@ public class Main {
                         Constants.FORCE_EXPLORE = true;
                         System.out.println("Forced exploration activated");
                     }
+                }
+                if(stagnationCount > 200){
+                    FORCE_CONVERGE = true;
+                    Constants.FORCE_EXPLORE = false;
+                    System.out.println("Brace for convergence");
                 }
             }
             else {
