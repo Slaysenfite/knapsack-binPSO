@@ -23,14 +23,16 @@ public class Particle implements Comparable<Particle>, Cloneable{
 
             chance = UtilityMethods.generateRandomBoundedInt(0, 100);
             if(chance <= 50) {
-                position[i] = 1;
-                velocity[i] = 1;
-            }
-            else {
                 position[i] = 0;
                 velocity[i] = 0;
             }
+            else {
+                position[i] = 1;
+                velocity[i] = 1;
+            }
         }
+        this.personalBest = this.position;
+        this.nbBest = this.position;
     }
 
     public Particle(byte[] position) {

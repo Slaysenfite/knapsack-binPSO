@@ -13,6 +13,10 @@ public class UtilityMethods {
         return min + (int)(Math.random() * ((max - min) + 1));
     }
 
+    public static double generateU(){
+        return (generateRandomBoundedInt(0, 99) * 1.0)/100;
+    }
+
     public static ArrayList<Item> readDataFile(String filename) {
         FileReader file;
         ArrayList<Item> items = new ArrayList<>();
